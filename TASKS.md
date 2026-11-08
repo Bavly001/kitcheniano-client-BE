@@ -12,8 +12,10 @@
 - [x] Built real-time Server-Sent Events stream (`GET /client/notifications/stream`) with keepalive heartbeats
 - [x] Wrote comprehensive integration test suite (`tests/api.test.ts`) covering all 10 API endpoints (10/10 tests passing)
 - [x] Configured multi-stage Alpine Dockerfile and added service to root `docker-compose.yml` (port 4001)
+- [x] Rebuilt all Docker containers and verified end-to-end integration with running stack
 
 ## Decisions Log
 - **2026-11-08:** Adopted a simple Express + TypeScript microservice pattern matching `todo-list-app-BE` for maximum development speed and zero unnecessary framework overhead.
 - **2026-11-08:** Leveraged `mysql2/promise` connection pooling directly against `kitcheniano_db` on port 3306, avoiding duplicate schema maintenance while preserving tenant organization scoping (`organizationId`).
 - **2026-11-08:** Enforced authoritative price snapshotting on backend: prices submitted by client requests are ignored; exact dish prices are fetched directly from `menu_items` and snapshotted into `order_items`.
+- **2026-11-08:** Removed non-existent `updatedAt` field lookups from `menu_items` and `orders` queries, matching the production TypeORM schema contract.

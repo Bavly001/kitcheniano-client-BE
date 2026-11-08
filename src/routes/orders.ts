@@ -105,8 +105,8 @@ router.post('/', async (req: AuthenticatedClientRequest, res: Response) => {
       `INSERT INTO orders (
         organizationId, clientId, customerName, customerPhone, customerAddress,
         type, status, paymentStatus, subtotal, discountAmount, discountPercent,
-        totalPrice, scheduledFor, notes, createdAt, updatedAt
-      ) VALUES (?, ?, ?, ?, ?, ?, 'pending', 'unpaid', ?, 0, 0, ?, ?, ?, NOW(), NOW())`,
+        totalPrice, scheduledFor, notes, createdAt
+      ) VALUES (?, ?, ?, ?, ?, ?, 'pending', 'unpaid', ?, 0, 0, ?, ?, ?, NOW())`,
       [
         orgId,
         clientId,
@@ -190,7 +190,7 @@ router.get('/', async (req: AuthenticatedClientRequest, res: Response) => {
   try {
     const [orders] = await pool.query<RowDataPacket[]>(
       `SELECT id, organizationId, customerName, customerPhone, customerAddress,
-              type, status, paymentStatus, subtotal, totalPrice, scheduledFor, notes, createdAt, updatedAt
+              type, status, paymentStatus, subtotal, totalPrice, scheduledFor, notes, createdAt
        FROM orders
        WHERE clientId = ? AND organizationId = ?
        ORDER BY createdAt DESC`,
@@ -261,7 +261,7 @@ router.get('/:id', async (req: AuthenticatedClientRequest, res: Response) => {
   try {
     const [orders] = await pool.query<RowDataPacket[]>(
       `SELECT id, organizationId, customerName, customerPhone, customerAddress,
-              type, status, paymentStatus, subtotal, totalPrice, scheduledFor, notes, createdAt, updatedAt
+              type, status, paymentStatus, subtotal, totalPrice, scheduledFor, notes, createdAt
        FROM orders
        WHERE id = ? AND clientId = ? AND organizationId = ?`,
       [orderId, clientId, orgId],

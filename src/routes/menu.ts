@@ -21,7 +21,7 @@ router.get('/', async (req: Request, res: Response) => {
 
   try {
     let query = `
-      SELECT id, organizationId, name, description, price, imageUrl, notes, createdAt, updatedAt
+      SELECT id, organizationId, name, description, price, imageUrl, notes, createdAt
       FROM menu_items
       WHERE organizationId = ?
         AND isVisibleOnMenu = 1
@@ -73,7 +73,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 
   try {
     const [rows] = await pool.query<RowDataPacket[]>(
-      `SELECT id, organizationId, name, description, price, imageUrl, notes, createdAt, updatedAt
+      `SELECT id, organizationId, name, description, price, imageUrl, notes, createdAt
        FROM menu_items
        WHERE id = ?
          AND organizationId = ?
