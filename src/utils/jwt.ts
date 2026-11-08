@@ -13,7 +13,7 @@ export interface ClientTokenPayload {
   role: 'client';
 }
 
-export const JWT_SECRET = process.env.JWT_SECRET || 'kitcheniano_client_jwt_super_secret_key_2026';
+export const JWT_SECRET = process.env.JWT_SECRET || '';
 export const DEFAULT_EXPIRATION = '7d';
 
 /**

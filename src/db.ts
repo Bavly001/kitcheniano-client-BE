@@ -8,12 +8,15 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const useSsl = process.env.DB_SSL === 'true';
+
 export const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
+  host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT) || 3306,
-  user: process.env.DB_USER || 'kitcheniano_user',
-  password: process.env.DB_PASSWORD || 'kitcheniano_pass',
-  database: process.env.DB_NAME || 'kitcheniano_db',
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  ssl: useSsl ? { minVersion: 'TLSv1.2', rejectUnauthorized: true } : undefined,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -27,7 +30,7 @@ export async function initializeDatabase(retries = 5, delayMs = 2000): Promise<v
     try {
       console.log(`[DB] Attempting database connection (attempt ${attempt}/${retries})...`);
       const connection = await pool.getConnection();
-      console.log(`[DB] Successfully connected to MySQL database: ${process.env.DB_NAME || 'kitcheniano_db'}`);
+      console.log(`[DB] Successfully connected to MySQL database: ${process.env.DB_NAME || ''}`);
       connection.release();
       return;
     } catch (err: any) {

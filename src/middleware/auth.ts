@@ -53,7 +53,7 @@ export function authenticateClient(
 
   // Resolve organization ID from headers or token
   const headerOrgId = req.headers['x-organization-id'] as string | undefined;
-  const orgId = headerOrgId || decoded.organizationId || process.env.DEFAULT_ORG_ID || 'org_8492a158b';
+  const orgId = headerOrgId || decoded.organizationId || process.env.DEFAULT_ORG_ID || '';
 
   req.client = {
     id: decoded.clientId,
@@ -90,14 +90,14 @@ export function optionalClientAuth(
       req.client = {
         id: decoded.clientId,
         email: decoded.email,
-        organizationId: decoded.organizationId || process.env.DEFAULT_ORG_ID || 'org_8492a158b',
+        organizationId: decoded.organizationId || process.env.DEFAULT_ORG_ID || '',
         role: 'client',
       };
     }
   }
 
   const headerOrgId = req.headers['x-organization-id'] as string | undefined;
-  req.organizationId = req.client?.organizationId || headerOrgId || process.env.DEFAULT_ORG_ID || 'org_8492a158b';
+  req.organizationId = req.client?.organizationId || headerOrgId || process.env.DEFAULT_ORG_ID || '';
 
   next();
 }

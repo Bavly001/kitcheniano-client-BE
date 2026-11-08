@@ -16,7 +16,7 @@ const router = Router();
 // POST /client/auth/register
 router.post('/register', async (req: AuthenticatedClientRequest, res: Response) => {
   const { email, password, firstName, lastName, phone, address } = req.body || {};
-  const orgId = req.headers['x-organization-id'] as string || process.env.DEFAULT_ORG_ID || 'org_8492a158b';
+  const orgId = (req.headers['x-organization-id'] as string) || process.env.DEFAULT_ORG_ID || '';
 
   if (!email || !password || !firstName || !lastName) {
     res.status(400).json({ error: 'Email, password, firstName, and lastName are required' });
@@ -95,7 +95,7 @@ router.post('/register', async (req: AuthenticatedClientRequest, res: Response) 
 // POST /client/auth/login
 router.post('/login', async (req: AuthenticatedClientRequest, res: Response) => {
   const { email, password } = req.body || {};
-  const orgId = req.headers['x-organization-id'] as string || process.env.DEFAULT_ORG_ID || 'org_8492a158b';
+  const orgId = (req.headers['x-organization-id'] as string) || process.env.DEFAULT_ORG_ID || '';
 
   if (!email || !password) {
     res.status(400).json({ error: 'Email and password are required' });

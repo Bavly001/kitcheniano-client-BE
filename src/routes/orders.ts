@@ -28,13 +28,29 @@ router.post('/', async (req: AuthenticatedClientRequest, res: Response) => {
     items,
   } = req.body || {};
 
-  if (!customerName || !customerPhone) {
-    res.status(400).json({ error: 'Customer name and phone number are required' });
+  // Automatically auto-fill from verified customer sign-up profile
+  const [clientRows] = await pool.query<RowDataPacket[]>(
+    'SELECT firstName, lastName, phone, address, email FROM clients WHERE id = ? AND organizationId = ?',
+    [clientId, orgId],
+  );
+  const clientProfile = clientRows[0];
+  const profileFullName = clientProfile
+    ? `${clientProfile.firstName || ''} ${clientProfile.lastName || ''}`.trim()
+    : '';
+  const profilePhone = clientProfile?.phone || '';
+  const profileAddress = clientProfile?.address || '';
+
+  const finalCustomerName = (customerName || profileFullName || clientProfile?.email || '').trim();
+  const finalCustomerPhone = (customerPhone || profilePhone || '').trim();
+  const finalCustomerAddress = type === 'delivery' ? (customerAddress || profileAddress || '').trim() : null;
+
+  if (!finalCustomerName || !finalCustomerPhone) {
+    res.status(400).json({ error: 'Customer name and phone number are required from account profile' });
     return;
   }
 
-  if (type === 'delivery' && !customerAddress) {
-    res.status(400).json({ error: 'Delivery address is required for delivery orders' });
+  if (type === 'delivery' && !finalCustomerAddress) {
+    res.status(400).json({ error: 'Delivery address is required for delivery orders. Please enter your address.' });
     return;
   }
 
@@ -110,9 +126,9 @@ router.post('/', async (req: AuthenticatedClientRequest, res: Response) => {
       [
         orgId,
         clientId,
-        customerName.trim(),
-        customerPhone.trim(),
-        type === 'delivery' ? customerAddress.trim() : null,
+        finalCustomerName,
+        finalCustomerPhone,
+        finalCustomerAddress,
         type,
         finalSubtotal,
         totalPrice,
@@ -314,7 +330,8 @@ router.get('/:id', async (req: AuthenticatedClientRequest, res: Response) => {
  * Triggers an HTTP notification to the kitchen dashboard (port 4000)
  */
 async function notifyKitchenDashboard(order: any, orgId: string): Promise<void> {
-  const kitchenUrl = process.env.KITCHEN_DASHBOARD_URL || 'http://localhost:4000';
+  const kitchenUrl = process.env.KITCHEN_DASHBOARD_URL;
+  if (!kitchenUrl) return;
   try {
     await fetch(`${kitchenUrl}/public/orders/notify-kitchen`, {
       method: 'POST',

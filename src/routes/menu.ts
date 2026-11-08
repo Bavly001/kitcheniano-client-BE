@@ -13,7 +13,7 @@ const router = Router();
 // GET /client/menu
 // Query params: search, limit, page
 router.get('/', async (req: Request, res: Response) => {
-  const orgId = (req.headers['x-organization-id'] as string) || process.env.DEFAULT_ORG_ID || 'org_8492a158b';
+  const orgId = (req.headers['x-organization-id'] as string) || process.env.DEFAULT_ORG_ID || '';
   const search = typeof req.query.search === 'string' ? req.query.search.trim() : '';
   const limit = Math.min(Math.max(Number(req.query.limit) || 50, 1), 100);
   const page = Math.max(Number(req.query.page) || 1, 1);
@@ -63,7 +63,7 @@ router.get('/', async (req: Request, res: Response) => {
 
 // GET /client/menu/:id
 router.get('/:id', async (req: Request, res: Response) => {
-  const orgId = (req.headers['x-organization-id'] as string) || process.env.DEFAULT_ORG_ID || 'org_8492a158b';
+  const orgId = (req.headers['x-organization-id'] as string) || process.env.DEFAULT_ORG_ID || '';
   const dishId = Number(req.params.id);
 
   if (isNaN(dishId)) {
