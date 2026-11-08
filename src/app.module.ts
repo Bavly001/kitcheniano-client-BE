@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { getTypeOrmConfig } from './config/typeorm.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { MenuModule } from './modules/menu/menu.module';
+import { CartModule } from './modules/cart/cart.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MenuModule } from './modules/menu/menu.module';
     }),
     AuthModule,
     MenuModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [],
